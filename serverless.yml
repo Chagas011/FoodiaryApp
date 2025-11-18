@@ -6,6 +6,7 @@ provider:
   region: us-east-1
   runtime: nodejs22.x
   memorySize: 128
+  stage: ${opt:stage, 'dev'}
 
 package:
   individually: true
@@ -21,3 +22,6 @@ functions:
       - httpApi:
           path: /hello/{id}
           method: POST
+
+resources:
+  - ${file(./sls/resources/UserPool.yml)}
