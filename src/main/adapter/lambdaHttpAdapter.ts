@@ -1,3 +1,4 @@
+import { ApplicationError } from "@/application/errors/application/ApplicationError";
 import { ErrorCode } from "@/application/errors/ErrorCode";
 import { HttpError } from "@/application/errors/http/HttpError";
 import { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from "aws-lambda";
@@ -40,7 +41,13 @@ export function lambdaHttpAdapter(controller: Controller<unknown>) {
       if (error instanceof HttpError) {
         return lambdaErrorResponse(error);
       }
-
+      if (error instanceof ApplicationError) {
+        return lambdaErrorResponse({
+          statusCode: error.statusCode ?? 400,
+          code: error.code,
+          message: error.message,
+        });
+      }
       // eslint-disable-next-line no-console
       console.log(error);
       return lambdaErrorResponse({

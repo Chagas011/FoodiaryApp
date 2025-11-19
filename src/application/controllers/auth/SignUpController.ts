@@ -19,14 +19,14 @@ export class SignUpController extends Controller<SignUpController.Response> {
   > {
     const { account } = body;
 
-    const { accessToken, refreshToken, email } =
-      await this.signUpUseCase.execute(account);
+    const { accessToken, refreshToken } = await this.signUpUseCase.execute(
+      account
+    );
     return {
       statusCode: 201,
       body: {
         accessToken,
         refreshToken,
-        email,
       },
     };
   }
@@ -36,6 +36,5 @@ export namespace SignUpController {
   export type Response = {
     accessToken: string;
     refreshToken: string;
-    email: string;
   };
 }
