@@ -1,7 +1,10 @@
+import { InvalidRefreshToken } from "@/application/errors/application/InvalidRefreshToken";
 import { Injectable } from "@/kernel/decorators/Injectable";
 import { AppConfig } from "@/shared/config/AppConfig";
 import {
+  GetTokensFromRefreshTokenCommand,
   InitiateAuthCommand,
+  RefreshTokenReuseException,
   SignUpCommand,
 } from "@aws-sdk/client-cognito-identity-provider";
 import { createHmac } from "node:crypto";
@@ -13,11 +16,18 @@ export class AuthGateway {
   async singnUp({
     email,
     password,
+    internalId,
   }: AuthGateway.SignUpParams): Promise<AuthGateway.SignUpResult> {
     const command = new SignUpCommand({
       ClientId: this.appConfig.auth.cognito.clientId,
       Username: email,
       Password: password,
+      UserAttributes: [
+        {
+          Name: "custom:internalId",
+          Value: internalId,
+        },
+      ],
       SecretHash: this.getSecretHash(email),
     });
 
@@ -58,6 +68,35 @@ export class AuthGateway {
     };
   }
 
+  async refreshToken({
+    refreshToken,
+  }: AuthGateway.RefreshTokenParams): Promise<AuthGateway.RefreshTokenResult> {
+    try {
+      const command = new GetTokensFromRefreshTokenCommand({
+        ClientId: this.appConfig.auth.cognito.clientId,
+        RefreshToken: refreshToken,
+        ClientSecret: this.appConfig.auth.cognito.clientSecret,
+      });
+
+      const { AuthenticationResult } = await cognitoClient.send(command);
+      if (
+        !AuthenticationResult?.RefreshToken ||
+        !AuthenticationResult.AccessToken
+      ) {
+        throw new Error("Cannot Refresh Autenticate");
+      }
+      return {
+        accessToken: AuthenticationResult?.AccessToken,
+        refreshToken: AuthenticationResult?.RefreshToken,
+      };
+    } catch (error) {
+      if (error instanceof RefreshTokenReuseException) {
+        throw new InvalidRefreshToken();
+      }
+      throw error;
+    }
+  }
+
   private getSecretHash(email: string) {
     const secret = this.appConfig.auth.cognito.clientSecret;
     const clientId = this.appConfig.auth.cognito.clientId;
@@ -71,6 +110,7 @@ export namespace AuthGateway {
   export type SignUpParams = {
     email: string;
     password: string;
+    internalId: string;
   };
 
   export type SignUpResult = {
@@ -84,6 +124,14 @@ export namespace AuthGateway {
 
   export type SignInResult = {
     accessToken: string;
+    refreshToken: string;
+  };
+  export type RefreshTokenResult = {
+    accessToken: string;
+    refreshToken: string;
+  };
+
+  export type RefreshTokenParams = {
     refreshToken: string;
   };
 }

@@ -5,6 +5,20 @@ signUp:
         path: /auth/sign-up
         method: POST
 
+signIn:
+  handler: src/main/functions/auth/signIn.handler
+  events:
+    - httpApi:
+        path: /auth/sign-in
+        method: POST
+
+refreshToken:
+  handler: src/main/functions/auth/refreshToken.handler
+  events:
+    - httpApi:
+        path: /auth/refresh-token
+        method: POST
+
 preSignUpTrigger:
   handler: src/main/functions/auth/preSignUpTrigger.handler
   events:
@@ -13,3 +27,7 @@ preSignUpTrigger:
         trigger: PreSignUp
         existing: true
         forceDeploy: true
+
+# the trigger is configured manually to support event v2
+preTokenGeneration:
+  handler: src/main/functions/auth/preTokenGenerationTrigger.handler

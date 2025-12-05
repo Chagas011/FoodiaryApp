@@ -8,13 +8,16 @@ import { SignUpBody, signUpSchema } from "./schemas/signUpSchema";
 
 @Injectable()
 @Schema(signUpSchema)
-export class SignUpController extends Controller<SignUpController.Response> {
+export class SignUpController extends Controller<
+  "public",
+  SignUpController.Response
+> {
   constructor(private readonly signUpUseCase: SignUpUseCase) {
     super();
   }
   protected override async handle({
     body,
-  }: Controller.Request<SignUpBody>): Promise<
+  }: Controller.Request<"public", SignUpBody>): Promise<
     Controller.Response<SignUpController.Response>
   > {
     const { account } = body;
