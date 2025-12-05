@@ -13,7 +13,7 @@ import {
 @Injectable()
 @Schema(refreshTokenSchema)
 export class RefreshTokenController extends Controller<
-  "private",
+  "public",
   RefreshTokenController.Response
 > {
   constructor(private readonly refreshTokenUseCase: RefreshTokenUseCase) {
@@ -21,7 +21,7 @@ export class RefreshTokenController extends Controller<
   }
   protected override async handle({
     body,
-  }: Controller.Request<"private", RefreshTokenBody>): Promise<
+  }: Controller.Request<"public", RefreshTokenBody>): Promise<
     Controller.Response<RefreshTokenController.Response>
   > {
     const { refreshToken } = body;

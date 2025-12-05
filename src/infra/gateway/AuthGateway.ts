@@ -2,6 +2,8 @@ import { InvalidRefreshToken } from "@/application/errors/application/InvalidRef
 import { Injectable } from "@/kernel/decorators/Injectable";
 import { AppConfig } from "@/shared/config/AppConfig";
 import {
+  ConfirmForgotPasswordCommand,
+  ForgotPasswordCommand,
   GetTokensFromRefreshTokenCommand,
   InitiateAuthCommand,
   RefreshTokenReuseException,
@@ -97,6 +99,34 @@ export class AuthGateway {
     }
   }
 
+  async forgotPassword({
+    email,
+  }: AuthGateway.ForgotPasswordParams): Promise<void> {
+    const command = new ForgotPasswordCommand({
+      ClientId: this.appConfig.auth.cognito.clientId,
+      Username: email,
+      SecretHash: this.getSecretHash(email),
+    });
+
+    await cognitoClient.send(command);
+  }
+
+  async confirmForgotPassword({
+    confirmationCode,
+    email,
+    password,
+  }: AuthGateway.ConfirmForgotPasswordParams): Promise<void> {
+    const command = new ConfirmForgotPasswordCommand({
+      ClientId: this.appConfig.auth.cognito.clientId,
+      Username: email,
+      SecretHash: this.getSecretHash(email),
+      ConfirmationCode: confirmationCode,
+      Password: password,
+    });
+
+    await cognitoClient.send(command);
+  }
+
   private getSecretHash(email: string) {
     const secret = this.appConfig.auth.cognito.clientSecret;
     const clientId = this.appConfig.auth.cognito.clientId;
@@ -129,6 +159,16 @@ export namespace AuthGateway {
   export type RefreshTokenResult = {
     accessToken: string;
     refreshToken: string;
+  };
+
+  export type ForgotPasswordParams = {
+    email: string;
+  };
+
+  export type ConfirmForgotPasswordParams = {
+    confirmationCode: string;
+    email: string;
+    password: string;
   };
 
   export type RefreshTokenParams = {
