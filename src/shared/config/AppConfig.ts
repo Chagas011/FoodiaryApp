@@ -10,6 +10,7 @@ export class AppConfig {
       cognito: {
         clientId: env.COGNITO_CLIENT_ID,
         clientSecret: env.COGNITO_CLIENT_SECRET,
+        userPoolId: env.COGNITO_POOL_ID,
       },
     };
     this.db = {
@@ -25,6 +26,7 @@ export namespace AppConfig {
     cognito: {
       clientId: string;
       clientSecret: string;
+      userPoolId: string;
     };
   };
 

@@ -1,3 +1,4 @@
+import { Profile } from "@/application/entites/Profile";
 import z from "zod";
 
 export const signUpSchema = z.object({
@@ -8,17 +9,27 @@ export const signUpSchema = z.object({
       .min(8, "password should be at least 8 characters long")
       .regex(
         /[A-Z]/,
-        "The password should contain at least 1 uppercase character."
+        "The password should contain at least 1 uppercase character.",
       )
       .regex(
         /[a-z]/,
-        "The password must contain at least one lowercase letter."
+        "The password must contain at least one lowercase letter.",
       )
       .regex(/[0-9]/, "The password must contain at least one number.")
       .regex(
         /[^A-Za-z0-9]/,
-        "The password must contain at least one special character."
+        "The password must contain at least one special character.",
       ),
+  }),
+
+  profile: z.object({
+    name: z.string().min(1, "Name is required"),
+    birthDate: z.coerce.date().min(1, "BirthDate is required"),
+    gender: z.enum(Profile.Gender),
+    height: z.number().min(1, "height is required"),
+    weight: z.number().min(1, "weight is required"),
+    goal: z.enum(Profile.Goal),
+    activityLevel: z.enum(Profile.ActivityLevel),
   }),
 });
 

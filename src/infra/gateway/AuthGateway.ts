@@ -2,6 +2,7 @@ import { InvalidRefreshToken } from "@/application/errors/application/InvalidRef
 import { Injectable } from "@/kernel/decorators/Injectable";
 import { AppConfig } from "@/shared/config/AppConfig";
 import {
+  AdminDeleteUserCommand,
   ConfirmForgotPasswordCommand,
   ForgotPasswordCommand,
   GetTokensFromRefreshTokenCommand,
@@ -127,6 +128,15 @@ export class AuthGateway {
     await cognitoClient.send(command);
   }
 
+  async deleteUser({ externalId }: AuthGateway.DeleteUserParams) {
+    const command = new AdminDeleteUserCommand({
+      UserPoolId: this.appConfig.auth.cognito.userPoolId,
+      Username: externalId,
+    });
+
+    await cognitoClient.send(command);
+  }
+
   private getSecretHash(email: string) {
     const secret = this.appConfig.auth.cognito.clientSecret;
     const clientId = this.appConfig.auth.cognito.clientId;
@@ -171,6 +181,9 @@ export namespace AuthGateway {
     password: string;
   };
 
+  export type DeleteUserParams = {
+    externalId: string;
+  };
   export type RefreshTokenParams = {
     refreshToken: string;
   };

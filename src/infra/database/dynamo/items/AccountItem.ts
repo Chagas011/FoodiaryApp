@@ -1,7 +1,7 @@
 import { Account } from "@/application/entites/Account";
 
 export class AccountItem {
-  private readonly type = "Account";
+  static readonly type = "Account";
   private readonly keys: AccountItem.Keys;
   constructor(private readonly attr: AccountItem.Attributes) {
     this.keys = {
@@ -15,7 +15,7 @@ export class AccountItem {
     return {
       ...this.keys,
       ...this.attr,
-      type: this.type,
+      type: AccountItem.type,
     };
   }
 
