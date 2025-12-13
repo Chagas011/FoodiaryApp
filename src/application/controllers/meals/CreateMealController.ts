@@ -1,21 +1,42 @@
 import { Controller } from "@/application/contracts/Controller";
+import { CreateMealUseCase } from "@/application/useCases/meals/CreateMealUseCase";
 
+import { Meal } from "@/application/entites/Meal";
 import { Injectable } from "@/kernel/decorators/Injectable";
-
+import { Schema } from "@/kernel/decorators/Schema";
+import { CreateMealBody, createMealSchema } from "./schemas/createMealSchema";
 @Injectable()
+@Schema(createMealSchema)
 export class CreateMealController extends Controller<
   "private",
   CreateMealController.Response
 > {
+  constructor(private readonly createMealUseCase: CreateMealUseCase) {
+    super();
+  }
+
   protected override async handle({
     accountId,
-  }: Controller.Request<"private">): Promise<
+    body,
+  }: Controller.Request<"private", CreateMealBody>): Promise<
     Controller.Response<CreateMealController.Response>
   > {
+    const { file } = body;
+    const fileType =
+      file.type === "audio/m4a" ? Meal.Input.AUDIO : Meal.Input.PICTURE;
+    const { mealId, uploadSignature } = await this.createMealUseCase.execute({
+      accountId,
+      file: {
+        size: file.size,
+        type: fileType,
+      },
+    });
+
     return {
       statusCode: 201,
       body: {
-        accountId,
+        mealId,
+        uploadSignature,
       },
     };
   }
@@ -23,6 +44,7 @@ export class CreateMealController extends Controller<
 
 export namespace CreateMealController {
   export type Response = {
-    accountId: string;
+    mealId: string;
+    uploadSignature: string;
   };
 }
