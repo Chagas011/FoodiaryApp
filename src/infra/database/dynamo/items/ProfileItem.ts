@@ -21,7 +21,7 @@ export class ProfileItem {
     return new ProfileItem({
       ...profile,
       createdAt: profile.createdAt.toISOString(),
-      birthDate: profile.createdAt.toISOString(),
+      birthDate: profile.birthDate.toISOString(),
     });
   }
 

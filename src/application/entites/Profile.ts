@@ -5,8 +5,8 @@ export class Profile {
   gender: Profile.Gender;
   height: number;
   weight: number;
-  goal: Profile.Goal;
-  activityLevel: Profile.ActivityLevel;
+  readonly goal: Profile.Goal;
+  readonly activityLevel: Profile.ActivityLevel;
 
   readonly createdAt: Date;
 

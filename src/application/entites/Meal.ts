@@ -43,7 +43,7 @@ export namespace Meal {
     UPLOADING = "UPLOADING",
     QUEUED = "QUEUED",
     PROCESSING = "PROCESSING",
-    SUCCES = "SUCCES",
+    SUCCESS = "SUCCESS",
     FAILED = "FAILED",
   }
   export enum Input {
