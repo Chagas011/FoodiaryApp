@@ -6,6 +6,7 @@ export class AppConfig {
   readonly auth: AppConfig.Auth;
   readonly db: AppConfig.Database;
   readonly storage: AppConfig.Storage;
+  readonly cdn: AppConfig.CDN;
   constructor() {
     this.auth = {
       cognito: {
@@ -22,6 +23,9 @@ export class AppConfig {
 
     this.storage = {
       mealsBucket: env.MEALS_BUCKET,
+    };
+    this.cdn = {
+      mealsCDN: env.MEALS_CDN_DOMAIN_NAME,
     };
   }
 }
@@ -43,5 +47,9 @@ export namespace AppConfig {
 
   export type Storage = {
     mealsBucket: string;
+  };
+
+  export type CDN = {
+    mealsCDN: string;
   };
 }

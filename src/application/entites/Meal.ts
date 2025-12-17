@@ -4,8 +4,8 @@ export class Meal {
   readonly accountId: string;
   status: Meal.Status;
   attempts: number;
-  inputType: Meal.Input;
-  inputFileKey: string;
+  readonly inputType: Meal.Input;
+  readonly inputFileKey: string;
   name: string;
   icon: string;
   foods: Meal.Food[];
