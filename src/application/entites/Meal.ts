@@ -47,7 +47,6 @@ export namespace Meal {
     FAILED = "FAILED",
   }
   export enum Input {
-    AUDIO = "AUDIO",
     PICTURE = "PICTURE",
   }
 

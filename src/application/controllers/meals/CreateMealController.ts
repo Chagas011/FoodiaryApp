@@ -22,13 +22,12 @@ export class CreateMealController extends Controller<
     Controller.Response<CreateMealController.Response>
   > {
     const { file } = body;
-    const fileType =
-      file.type === "audio/m4a" ? Meal.Input.AUDIO : Meal.Input.PICTURE;
+
     const { mealId, uploadSignature } = await this.createMealUseCase.execute({
       accountId,
       file: {
         size: file.size,
-        type: fileType,
+        type: Meal.Input.PICTURE,
       },
     });
 

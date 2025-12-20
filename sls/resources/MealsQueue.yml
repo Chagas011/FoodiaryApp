@@ -15,3 +15,29 @@ Resources:
       QueueName: ${self:service}-${self:provider.stage}-MealsDLQ
       MessageRetentionPeriod: 1209600 # 14 days
 
+  MealsDLQAlarmTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: ${self:service}-${self:provider.stage}-MealsDLQAlarmTopic
+      Subscription:
+        - Endpoint: washington.chagas.9@hotmail.com
+          Protocol: email
+
+  MealsDLQAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: ${self:service}-${self:provider.stage}-MealsDLQAlarm
+      AlarmDescription: Triggered when messages are found in MealsDLQ
+      Namespace: AWS/SQS
+      MetricName: ApproximateNumberOfMessagesVisible
+      Dimensions:
+        - Name: QueueName
+          Value: !GetAtt MealsDLQ.QueueName
+      Statistic: Average
+      Period: 60
+      EvaluationPeriods: 1
+      Threshold: 0
+      ComparisonOperator: GreaterThanThreshold
+      TreatMissingData: notBreaching
+      AlarmActions:
+        - !Ref MealsDLQAlarmTopic

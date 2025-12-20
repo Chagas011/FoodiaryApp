@@ -3,7 +3,7 @@ import z from "zod";
 const MAX_FILE_IN_MBS = 10 * 1024 * 1024;
 export const createMealSchema = z.object({
   file: z.object({
-    type: z.enum(["audio/m4a", "image/jpeg"]),
+    type: z.enum(["image/jpeg"]),
     size: z
       .number()
       .min(1, "size is required")

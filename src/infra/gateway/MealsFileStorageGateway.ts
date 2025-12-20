@@ -11,9 +11,8 @@ export class MealsFileStorageGateway {
   constructor(private readonly config: AppConfig) {}
   static generateInputFileKey({
     accountId,
-    inputType,
   }: MealsFileStorageGateway.GenerateInputFileKey): string {
-    const extension = inputType === Meal.Input.AUDIO ? "m4a" : "jpeg";
+    const extension = "jpeg";
     const fileName = `${randomUUID()}.${extension}`;
 
     return `${accountId}/${fileName}`;
@@ -30,8 +29,7 @@ export class MealsFileStorageGateway {
     accountId,
   }: MealsFileStorageGateway.CreatePOSTParams): Promise<MealsFileStorageGateway.CreatePOSTResult> {
     const bucket = this.config.storage.mealsBucket;
-    const contentType =
-      file.inputType === Meal.Input.AUDIO ? "audio/m4a" : "image/jpeg";
+    const contentType = "image/jpeg";
 
     const { fields, url } = await createPresignedPost(s3Client, {
       Bucket: bucket,
@@ -85,7 +83,6 @@ export class MealsFileStorageGateway {
 export namespace MealsFileStorageGateway {
   export type GenerateInputFileKey = {
     accountId: string;
-    inputType: Meal.Input;
   };
 
   export type CreatePOSTParams = {
