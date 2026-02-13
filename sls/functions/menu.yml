@@ -1,0 +1,26 @@
+createMenu:
+  handler: src/main/functions/menu/createMenu.handler
+  events:
+    - httpApi:
+        path: /menu
+        method: POST
+        authorizer:
+          name: CognitoAuthorizer
+
+processMenu:
+  handler: src/main/functions/menu/processMenu.handler
+  memorySize: 1024
+  timeout: 120
+  events:
+    - sqs:
+        arn: !GetAtt MenusQueue.Arn
+        batchSize: 2
+
+getMenuById:
+  handler: src/main/functions/menu/getMenuById.handler
+  events:
+    - httpApi:
+        path: /menu/{menuId}
+        method: GET
+        authorizer:
+          name: CognitoAuthorizer

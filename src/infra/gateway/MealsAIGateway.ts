@@ -62,14 +62,14 @@ export class MealsAIGateway {
       });
       const json = response.choices[0].message.content;
       if (!json) {
-        throw new Error("Failed ptocessing meal " + meal.id);
+        throw new Error("Failed processing meal " + meal.id);
       }
 
       const { success, data, error } = mealSchema.safeParse(JSON.parse(json));
 
       if (!success) {
         console.log(error);
-        throw new Error("Failed ptocessing meal " + meal.id);
+        throw new Error("Failed processing meal " + meal.id);
       }
 
       return data;

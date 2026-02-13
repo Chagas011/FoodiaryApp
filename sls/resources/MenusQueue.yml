@@ -1,0 +1,43 @@
+Resources:
+  MenusQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: ${self:service}-${self:provider.stage}-MenusQueue
+      VisibilityTimeout: 130
+      ReceiveMessageWaitTimeSeconds: 20
+      RedrivePolicy:
+        maxReceiveCount: 2
+        deadLetterTargetArn: !GetAtt MenusDLQ.Arn
+
+  MenusDLQ:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: ${self:service}-${self:provider.stage}-MenusDLQ
+      MessageRetentionPeriod: 1209600 # 14 days
+
+  MenusDLQAlarmTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: ${self:service}-${self:provider.stage}-MenusDLQAlarmTopic
+      Subscription:
+        - Endpoint: washington.chagas.9@hotmail.com
+          Protocol: email
+
+  MenusDLQAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: ${self:service}-${self:provider.stage}-MenusDLQAlarm
+      AlarmDescription: Triggered when messages are found in MenusDLQ
+      Namespace: AWS/SQS
+      MetricName: ApproximateNumberOfMessagesVisible
+      Dimensions:
+        - Name: QueueName
+          Value: !GetAtt MenusDLQ.QueueName
+      Statistic: Average
+      Period: 60
+      EvaluationPeriods: 1
+      Threshold: 0
+      ComparisonOperator: GreaterThanThreshold
+      TreatMissingData: notBreaching
+      AlarmActions:
+        - !Ref MenusDLQAlarmTopic

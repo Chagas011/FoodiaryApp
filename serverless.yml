@@ -36,10 +36,14 @@ functions:
   - ${file(./sls/functions/accounts.yml)}
   - ${file(./sls/functions/profiles.yml)}
   - ${file(./sls/functions/goals.yml)}
+  - ${file(./sls/functions/menu.yml)}
 
 resources:
   - ${file(./sls/resources/UserPool.yml)}
   - ${file(./sls/resources/MainTable.yml)}
   - ${file(./sls/resources/MealsBucket.yml)}
   - ${file(./sls/resources/MealsBucketCDN.yml)}
+  - ${file(./sls/resources/ProfilesBucket.yml)}
+  - ${file(./sls/resources/ProfilesBucketCDN.yml)}
   - ${file(./sls/resources/MealsQueue.yml)}
+  - ${file(./sls/resources/MenusQueue.yml)}

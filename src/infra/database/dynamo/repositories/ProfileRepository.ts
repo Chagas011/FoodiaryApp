@@ -76,4 +76,37 @@ export class ProfileRepository {
 
     await dynamoClient.send(command);
   }
+
+  async updatePhoto({
+    accountId,
+    photoURL,
+  }: ProfileRepository.InputUpdatePhoto) {
+    const command = new UpdateCommand({
+      TableName: this.config.db.dynamodb.mainTable,
+
+      Key: {
+        PK: ProfileItem.getPK(accountId),
+        SK: ProfileItem.getSK(accountId),
+      },
+      UpdateExpression: "SET photoURL = :photoURL",
+
+      ExpressionAttributeNames: {
+        "#photoURL": "photoURL",
+      },
+      ExpressionAttributeValues: {
+        ":photoURL": photoURL,
+      },
+
+      ReturnValues: "NONE",
+    });
+
+    await dynamoClient.send(command);
+  }
+}
+
+export namespace ProfileRepository {
+  export type InputUpdatePhoto = {
+    accountId: string;
+    photoURL: string;
+  };
 }

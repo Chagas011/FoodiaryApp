@@ -19,9 +19,16 @@ export class ProfileItem {
 
   static fromEntity(profile: Profile) {
     return new ProfileItem({
-      ...profile,
-      createdAt: profile.createdAt.toISOString(),
+      accountId: profile.accountId,
+      name: profile.name,
       birthDate: profile.birthDate.toISOString(),
+      gender: profile.gender,
+      height: profile.height,
+      weight: profile.weight,
+      goal: profile.goal,
+      activityLevel: profile.activityLevel,
+      photoURL: profile.photoURL ?? null,
+      createdAt: profile.createdAt.toISOString(),
     });
   }
 
@@ -35,6 +42,7 @@ export class ProfileItem {
       weight: profileItem.weight,
       name: profileItem.name,
       goal: profileItem.goal,
+      photoURL: profileItem.photoURL ?? undefined,
       createdAt: new Date(profileItem.createdAt),
     });
   }
@@ -62,6 +70,7 @@ export namespace ProfileItem {
     weight: number;
     goal: Profile.Goal;
     activityLevel: Profile.ActivityLevel;
+    photoURL?: string | null;
     createdAt: string;
   };
 
