@@ -6,3 +6,12 @@ updateProfile:
         method: PUT
         authorizer:
           name: CognitoAuthorizer
+
+updateProfilePhoto:
+  handler: src/main/functions/profile/updateProfilePhoto.handler
+  events:
+    - httpApi:
+        path: /profiles/photo
+        method: POST
+        authorizer:
+          name: CognitoAuthorizer

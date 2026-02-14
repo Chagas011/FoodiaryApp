@@ -88,7 +88,7 @@ export class ProfileRepository {
         PK: ProfileItem.getPK(accountId),
         SK: ProfileItem.getSK(accountId),
       },
-      UpdateExpression: "SET photoURL = :photoURL",
+      UpdateExpression: "SET #photoURL = :photoURL",
 
       ExpressionAttributeNames: {
         "#photoURL": "photoURL",
